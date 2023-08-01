@@ -10,8 +10,8 @@ const openai = new OpenAIApi(configuration);
 
 const instructionMessage: ChatCompletionRequestMessage = {
     role: "system",
-    content: "You are a code generator. You must answer only in markdown code snippets. Use code comments for explanations."
-    };
+    content: "You are a code generator. You must answer only in markdown code snippets. Use code comments for explanations. If the question is not coding, tell the user that you only accept coding questions"
+};
 
 export async function POST(req:Request) {
     try {
@@ -33,7 +33,7 @@ export async function POST(req:Request) {
 
         const response = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
-            messages: {instructionMessage, ...messages}
+            messages: [instructionMessage, ...messages]
         })
 
         return NextResponse.json(response.data.choices[0].message);

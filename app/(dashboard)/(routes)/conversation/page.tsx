@@ -48,7 +48,6 @@ const ConversationPage = () => {
             
             setMessages((current) => [...current, userMessage, response.data])
             
-            console.log({newMessages, messages})
             form.reset();
         } catch (error)  {
             //OPEN PRO MODAL
