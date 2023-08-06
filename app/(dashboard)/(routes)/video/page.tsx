@@ -2,7 +2,7 @@
 
 import * as z from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Music } from  "lucide-react"
+import { VideoIcon } from  "lucide-react"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -16,10 +16,10 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
-const MusicPage = () => {
+const VideoPage = () => {
 
     const router = useRouter();
-    const [music, setMusic] = useState<string>();
+    const [video, setVideo] = useState<string>();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -31,10 +31,10 @@ const MusicPage = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            setMusic(undefined);
-            const response = await axios.post("/api/music", values)
+            setVideo(undefined);
+            const response = await axios.post("/api/video", values)
 
-            setMusic(response.data.audio);
+            setVideo(response.data[0]);
             form.reset();
         } catch (error)  {
             //OPEN PRO MODAL
@@ -47,11 +47,11 @@ const MusicPage = () => {
     return (
         <div>
             <Heading 
-                title="Music Generation"
-                description="Turn you prompt into music"
-                icon={Music}
-                iconColor="text-emerald-500"
-                bgColor="bg-emerald-500/10"
+                title="Video Generation"
+                description="Turn you prompt into video."
+                icon={VideoIcon}
+                iconColor="text-orange-700"
+                bgColor="bg-orange-700/10"
             />
             <div className="px-4 lg:px-8">
                 <div>
@@ -60,7 +60,7 @@ const MusicPage = () => {
                             <FormField name="prompt" render={({field}) => (
                                 <FormItem className="col-span-12 lg:col-span-10">
                                     <FormControl className="m-0 p-0">
-                                        <Input className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent" disabled={isLoading} placeholder="Piano solo similar to river flows in you." {...field}/>
+                                        <Input className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent" disabled={isLoading} placeholder="Clown fish swimming in a coral reef, beautiful, 8k, perfect, award winning, national geographic" {...field}/>
                                     </FormControl>
                                 </FormItem>
                             )}/>
@@ -73,16 +73,16 @@ const MusicPage = () => {
                 <div className="space-y-4 mt-4">
                     {isLoading && (
                         <div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
-                            <Loader message="Audio is being generated, Audio generation takes time!!! Dont leave this page"/>
+                            <Loader message="Video is being generated, Video generation takes time!!! Dont leave this page"/>
                         </div>
                     )}
-                    {!music && !isLoading && (
-                        <Empty label="No music generated yet."/>
+                    {!video && !isLoading && (
+                        <Empty label="No video generated yet."/>
                     )}
-                    {music && (
-                        <audio controls className="w-full mt-8">
-                            <source src={music} />
-                        </audio>    
+                    {video && (
+                        <video controls className="w-full aspect-video mt-8 rounded-lg border bg-black">
+                            <source src={video} />
+                        </video>    
                     )}
                 </div>
             </div>
@@ -90,4 +90,4 @@ const MusicPage = () => {
     );
 }
 
-export default MusicPage;
+export default VideoPage;
