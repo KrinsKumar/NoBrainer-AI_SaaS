@@ -55,7 +55,7 @@ const routes = [
     },
 ]
 
-const Sidebar = ({limitCount}: {limitCount: number}) => {
+const Sidebar = () => {
 
     const pathname = usePathname();
 
