@@ -7,6 +7,7 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast"
 
 import { Heading } from "@/components/Heading"
 import { formSchema } from "./constants"
@@ -15,6 +16,7 @@ import { Empty } from "@/components/Empty"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { limit, incrementLimit } from "@/lib/limit"
 
 const MusicPage = () => {
 
@@ -31,11 +33,16 @@ const MusicPage = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            setMusic(undefined);
-            const response = await axios.post("/api/music", values)
+                if (limit() < 5) {
+                setMusic(undefined);
+                const response = await axios.post("/api/music", values)
 
-            setMusic(response.data.audio);
-            form.reset();
+                incrementLimit();
+                setMusic(response.data.audio);
+                form.reset();
+            } else {
+                toast.error("You have reached your account limit.")
+            }
         } catch (error)  {
             //OPEN PRO MODAL
             console.log("error " + error)

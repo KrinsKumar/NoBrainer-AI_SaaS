@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { ChatCompletionRequestMessage } from "openai"
 import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast"
 
 import { Heading } from "@/components/Heading"
 import { formSchema } from "./constants"
@@ -19,6 +20,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { UserAvatar } from "@/components/user-avatar"
 import { BotAvatar } from "@/components/bot-avatar"
+import { limit, incrementLimit } from "@/lib/limit"
 
 const ConversationPage = () => {
 
@@ -35,22 +37,26 @@ const ConversationPage = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            const userMessage: ChatCompletionRequestMessage = {
-                role: "user",
-                content: values.prompt,
-            };
+            if (limit() < 5) {
+                const userMessage: ChatCompletionRequestMessage = {
+                    role: "user",
+                    content: values.prompt,
+                };
 
-            const newMessages = [...messages, userMessage]
+                const newMessages = [...messages, userMessage]
 
-            const response = await axios.post("/api/conversation", {
-                messages: newMessages,
-            })
-            
-            setMessages((current) => [...current, userMessage, response.data])
-            
-            form.reset();
+                const response = await axios.post("/api/conversation", {
+                    messages: newMessages,
+                })
+                
+                incrementLimit();
+                setMessages((current) => [...current, userMessage, response.data])
+                form.reset();
+            } else {
+                console.log("toast error initiated")
+                toast.error("You have reached your account limit.")
+            }
         } catch (error)  {
-            //OPEN PRO MODAL
             console.log("error " + error)
         } finally {
             router.refresh();

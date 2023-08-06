@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form";
 import Image from "next/image"
+import { toast } from "react-hot-toast"
 
 import { Heading } from "@/components/Heading"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -17,8 +18,8 @@ import { Empty } from "@/components/Empty"
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { Card, CardFooter } from "@/components/ui/card"
+import { limit, incrementLimit } from "@/lib/limit"
 
 const ImagePage = () => {
 
@@ -38,12 +39,16 @@ const ImagePage = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            setImages([]);
-            const response = await axios.post("/api/image", values);
+            if (limit() < 5) {
+                setImages([]);
+                const response = await axios.post("/api/image", values);
 
-            const urls = response.data.map((image: {url: string}) => image.url);
-            setImages(urls);
-
+                const urls = response.data.map((image: {url: string}) => image.url);
+                setImages(urls);
+                incrementLimit();
+            } else {
+                toast.error("You have reached your account limit.")
+            }
         } catch (error)  {
             //OPEN PRO MODAL
             console.log("error " + error)
