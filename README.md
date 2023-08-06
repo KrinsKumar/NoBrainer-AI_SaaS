@@ -1,6 +1,7 @@
 # [SaaS AI Platform](https://no-brainer-ai-saa-s-concept.vercel.app/)
 
-This is a Full Stack SaaS business concept made using Next.js 13 and Tailwind. You can talk with a bot, and generate code, image, audio, and video. NOTE - sometimes the generations won't work, because the APIs have their limits. The limits reset every month.
+This is a Full Stack SaaS business concept made using Next.js 13 and Tailwind. You can talk with a bot, and generate code, image, audio, and video.  
+NOTE - sometimes the generations won't work, because the APIs have their limits. The limits reset every month.
 
 ![Home page of the clone](/gh-images/image.png)
 
