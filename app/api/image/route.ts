@@ -25,16 +25,18 @@ export async function POST(req:Request) {
         if (!prompt) {
             return new NextResponse("Prompt is required", { status: 400 })
         }
+        let num = parseInt(amount, 10)
+        console.log({ prompt, resolution, num});
 
         const response = await openai.createImage({
-            prompt, 
+            prompt: prompt, 
             n: parseInt(amount, 10),
             size: resolution,
         })
 
         return NextResponse.json(response.data.data);
     } catch (error) {
-        console.log("IMAGE_ERROR: ", error)
+        console.log("IMAGE_ERROR: " + error)
         return new NextResponse("Internal Server Error", { status: 500 })
     }
 }
